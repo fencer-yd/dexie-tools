@@ -1,0 +1,22 @@
+{
+  "name": "dexie-tools",
+  "version": "1.0.0",
+  "description": "indexDB tools",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "indexDB",
+    "dexie",
+    "dexie-tools"
+  ],
+  "author": "fencer",
+  "license": "ISC",
+  "dependencies": {
+    "dexie": "^3.2.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6"
+  }
+}
