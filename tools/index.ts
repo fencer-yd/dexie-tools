@@ -2,9 +2,6 @@ import {Dexie, IndexableType, Table} from "dexie";
 
 type JSTypeName = String | Number | Boolean | Object | Symbol | BigInteger;
 
-const a: string[] = ['a'];
-type A = keyof typeof a;
-
 export default function createDBClass<T extends Record<string, JSTypeName>>(name: string, properties: T) {
   const key = Symbol(name);
   type PropertyType<K extends keyof typeof properties> = typeof properties[K] extends new (...args: unknown[]) => infer R ? R : never
