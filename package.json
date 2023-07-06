@@ -1,5 +1,5 @@
 {
-  "name": "dexie-tools",
+  "name": "fencer-dexie-tools",
   "version": "1.0.0",
   "description": "indexDB tools",
   "main": "index.ts",
