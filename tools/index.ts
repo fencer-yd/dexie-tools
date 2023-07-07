@@ -6,7 +6,7 @@ export default function createDBClass<T extends Record<string, JSTypeName>>(name
   const key = Symbol(name);
   type PropertyType<K extends keyof typeof properties> = typeof properties[K] extends new (...args: unknown[]) => infer R ? R : never
   type Properties = {
-    [K in keyof typeof properties]: PropertyType<K>;
+    [K in keyof typeof properties]?: PropertyType<K>;
   };
 
   return class extends Dexie {
@@ -18,12 +18,12 @@ export default function createDBClass<T extends Record<string, JSTypeName>>(name
       })
     }
 
-    async getField(filedKey: keyof typeof properties, value: PropertyType<typeof filedKey>) {
+    async getField<K extends keyof typeof properties>(filedKey: K, value: PropertyType<K>): Promise<Properties[]> {
       if (!this[key]) throw new Error(`${name} not ready`);
       return this[key].where(filedKey as string).equals(value as IndexableType).toArray();
     }
 
-    async deleteField(filedKey: keyof typeof properties, value: PropertyType<typeof filedKey>) {
+    async deleteField<K extends keyof typeof properties>(filedKey: K, value: PropertyType<K>) {
       if (!this[key]) throw new Error(`${name} not ready`);
       await this[key].where(filedKey as string).equals(value as IndexableType).delete();
     }
@@ -33,7 +33,7 @@ export default function createDBClass<T extends Record<string, JSTypeName>>(name
       await this[key].add(fields);
     }
 
-    async update(filedKey: keyof typeof properties, value: PropertyType<typeof filedKey>, newProperties: Properties) {
+    async update<K extends keyof typeof properties>(filedKey: K, value: PropertyType<K>, newProperties: Properties) {
       if (!this[key]) throw new Error(`${name} not ready`);
       const fields = await this[key].where(filedKey as string).equals(value as IndexableType).toArray();
       const [oldField] = fields;
@@ -43,12 +43,12 @@ export default function createDBClass<T extends Record<string, JSTypeName>>(name
       })
     }
 
-    async getAll() {
+    async getAll(): Promise<Properties[]> {
       if (!this[key]) throw new Error(`${name} not ready`);
       return this[key].toArray();
     }
 
-    async deleteAll() {
+    async deleteAll(): Promise<void> {
       if (!this[key]) throw new Error(`${name} not ready`);
       return this[key].clear();
     }
@@ -56,15 +56,24 @@ export default function createDBClass<T extends Record<string, JSTypeName>>(name
 }
 
 
-// for example
-// const DB = createDBClass('field', {
-//   a: String,
-//   b: Number
+// const DB = createDBClass('hello', {
+//   a: Number,
+//   b: String,
 // })
 //
 // const db = new DB();
 //
 // db.add({
-//   a: '2',
-//   b: 2
+//   a: 1,
+//   b: ''
 // })
+//
+// db.getField('a', 2);
+//
+// db.update('a', 1, {a: 2, b: '1'})
+//
+// db.deleteField('a', 2);
+//
+// db.getAll();
+
+
